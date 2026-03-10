@@ -1,4 +1,5 @@
-// Import database and model
+// Import necessary modules and models
+const { Track, db } = require('./setup.js');
 
 // Seed data
 const sampleTracks = [
@@ -101,3 +102,25 @@ const sampleTracks = [
 ];
 
 // Seed database with sample data
+async function seedDatabase() {
+  try {
+    // Insert sample tracks into the database
+    await Track.bulkCreate(sampleTracks);
+    console.log('Sample tracks inserted successfully!');
+
+    // Query the database to verify insertion
+    const allTracks = await Track.findAll();
+    console.log(`Total tracks in database: ${allTracks.length}`);
+
+    // Close the database connection
+    await db.close();
+  } catch (error) {
+    console.error('Error seeding database:', error);
+    await db.close();
+  }
+}
+
+// Run seeding if this file is executed directly
+if (require.main === module) {
+  seedDatabase();
+}
